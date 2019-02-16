@@ -4,18 +4,20 @@ Reference: https://docs.python.org/3/library/os.html.
 
 Use the `os` module perform command-line-style file and directory operations, and to access system environment variables.
 
+> NOTE: Windows users may need to modify the filepaths below by using different slashes.
+
 ## Directory Operations
 
-Get current working directory:
+Detect the path of the current working directory (in scripts, this reflects the dir from which the command is being run):
 
 ```python
-os.getcwd() # for scripts, reflects the dir where the command is being run
+os.getcwd() #> '/Users/mjr/Desktop/my-dir'
 ```
 
-Get directory of current file:
+In scripts, detect the path of the directory where the script file exists:
 
 ```py
-os.path.dirname(__file__)) # for scripts, reflects the dir where the script file exists
+os.path.dirname(__file__))
 ```
 
 Change directory:
@@ -44,13 +46,62 @@ Detect whether a specific file exists:
 os.path.isfile("/path/to/Desktop/some_file.txt") #> returns True or False
 ```
 
-Compile file paths by joining a directory with a relative file path:
+Compile file paths by joining the directory of the current file with a relative file path:
 
 ```py
-os.path.join(os.path.dirname(__file__), "../../some_upstream_file.txt")
+os.path.join(os.path.dirname(__file__), "../data/monthly_sales.csv")
+
+# use `os.path.join` in conjunction with commas to standardize paths across operating systems:
+os.path.join(os.path.dirname(__file__), "..", "data", "monthly_sales.csv")
+```
+
+More examples of how to assemble file paths:
+
+```py
+#
+# /Users/mjr/Desktop/my-dir/paths.py
+#
+# assumes the following files and directories exist on your computer:
+#
+#   /Users/mjr/Desktop/desktop_message.txt
+#   /Users/mjr/Desktop/my-dir
+#   /Users/mjr/Desktop/my-dir/paths.py <--- THIS FILE
+#   /Users/mjr/Desktop/my-dir/my_message.txt
+#   /Users/mjr/Desktop/my-dir/subdir/
+#   /Users/mjr/Desktop/my-dir/subdir/other_message.txt
+#
+
+import os
+
+# what's the name of this file?
+print(__file__)
+#> /Users/mjr/Desktop/my-dir/paths.py
+
+# what directory is this file in?
+print(os.path.dirname(__file__))
+#> /Users/mjr/Desktop/my-dir
+
+# examples of constructing paths to the various files...
+
+print(os.path.join(os.path.dirname(__file__), "my_message.txt"))
+#> /Users/mjr/Desktop/my-dir/my_message.txt
+
+print(os.path.join(os.path.dirname(__file__), "subdir"))
+#> /Users/mjr/Desktop/my-dir/subdir
+
+print(os.path.join(os.path.dirname(__file__), "subdir", "other_message.txt"))
+#> /Users/mjr/Desktop/my-dir/subdir/other_message.txt
+
+print(os.path.join(os.path.dirname(__file__), "..", "desktop_message.txt"))
+#> /Users/mjr/Desktop/my-dir/../desktop_message.txt
+
+print(os.path.isfile(os.path.join(os.path.dirname(__file__), "..", "desktop_message.txt")))
+#> True
 ```
 
 ## Environment Variables
+
+> Prerequisite: [Environment Variables](/notes/environment-variables.md)
 
 Get the entire environment:
 
